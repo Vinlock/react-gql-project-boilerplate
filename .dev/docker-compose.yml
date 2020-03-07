@@ -1,0 +1,43 @@
+version: "3"
+
+services:
+  server:
+    build:
+      context: ../server
+      dockerfile: ../.dev/server.Dockerfile
+    ports:
+      - 4000:4000
+    volumes:
+      - ../server:/var/app:delegated
+      - server-node-modules:/var/app/node_modules:cached
+    depends_on:
+      - mongo
+    environment:
+      - NODE_ENV=development
+      - APP_PORT=4000
+      - MONGO_CONNECTION=mongodb://mongo:27017/dev
+  mongo:
+    image: mongo:4.2.3
+    volumes:
+      - mongo-data:/data/db
+    ports:
+      - 27010:27017
+  client:
+    build:
+      context: ../client
+      dockerfile: ../.dev/client.Dockerfile
+    volumes:
+      - ../client:/var/app:delegated
+      - client-node-modules:/var/app/node_modules:cached
+    ports:
+      - 3000:3000
+    depends_on:
+      - server
+    environment:
+      - NODE_ENV=development
+      - SERVER_URL=http://server:4000
+
+volumes:
+  server-node-modules:
+  client-node-modules:
+  mongo-data:
