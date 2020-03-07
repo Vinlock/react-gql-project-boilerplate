@@ -1,2 +1,8 @@
+# Yarn
 yarn-error.log
+
+# JS
 node_modules
+
+# WebStorm
+.idea
